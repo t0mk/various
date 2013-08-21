@@ -31,6 +31,12 @@ import email.mime.text
 import mechanize
 import BeautifulSoup
 
+class C:
+    blue = '\033[94m'
+    green = '\033[92m'
+    red = '\033[91m'
+    end = '\033[0m'
+
 
 READ_LINKS_STORAGE = '/home/tomk/readlyyra.pi'
 
@@ -58,7 +64,7 @@ def getLinksForArea(code):
     br.select_form("browse_lyyrarentals")
     post = br.form.find_control('field_27')
     post.value = code
-    print "submitting search"
+    print C.red + "Submitting search" + C.end
     resp = br.submit()
     ls = []
     for link in br.links(url_regex='asunnot/ilmoitus', text_regex="Lis"):
@@ -69,7 +75,7 @@ def getLinksForArea(code):
 def gatherLinksForCodes(codes_list):
     r = {}
     for n in codes_list:
-        print "getting links for postal code %s" % n
+        print C.red + "Getting links for postal code " + C.end + "%s" % n
         r[n] = getLinksForArea(n)
     return r
 
@@ -100,20 +106,20 @@ def resolveCity(li, di):
                 return "Espoo"
             elif pn.startswith("00"):
                 return "Helsinki"
-    raise Exception("unknown city for link %s, with dict %s" % li, di)
+    raise Exception("unknown city for link %s, with dict %s" % (li, di))
 
 
 def sendmail(txt_par):
     m = email.mime.text.MIMEText(txt_par)
-    destination = '__your_email_@gmail.com'
-    frommail = '_from_email__t@gmail.com'
+    destination = '__your_email@gmail.com'
+    frommail = '__smtp_account@gmail.com'
     m['To'] = destination
     m['Subject'] = 'New ads ' + datetime.datetime.now().__str__()[:19]
     m['from'] = frommail
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.ehlo()
     s.starttls()
-    s.login(frommail, '_password__')
+    s.login(frommail, '______pass__')
     s.sendmail(destination, [destination], m.as_string())
     s.quit()
 
@@ -147,16 +153,23 @@ def compileEmail(ads_dict, ads_by_code):
         txt += "\n\n"
     return txt
 
-
+print C.blue + "Searched postal codes: " + C.end + "%s" % POSTAL_CODES
 links_by_code = gatherLinksForCodes(POSTAL_CODES)
+print C.blue + "Found following links for postal codes: " + C.end + "%s" % links_by_code
 current_links = sum(links_by_code.values(), [])
+print C.blue + "Aggregated list of currently found ad links: " + C.end + "%s" % current_links
 read_links = getReadLinks()
+print C.blue + "List of old links: " + C.end + "%s" % read_links
 
-ads_to_send = {a: getAdData(a) for a in set(read_links) ^ set(current_links)}
+links_to_send = set(current_links) - set(read_links)
 
-if not ads_to_send:
-    print "no new ads. not sending any email"
+if not links_to_send:
+    print C.green + "No new ads. not sending any email" + C.end
     sys.exit(0)
+
+ads_to_send = {a: getAdData(a) for a in links_to_send}
+print C.blue + "Ad links to send: " + C.end + "%s" % ads_to_send
+
 
 msg = compileEmail(ads_to_send, links_by_code)
 
