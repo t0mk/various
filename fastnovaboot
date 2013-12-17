@@ -2,7 +2,7 @@
 """
 Wrapper of nova API boot call that assigns a floating ip to an instance.
 
-It spares you from assigning a floating IPto the new instance after 
+It spares you from assigning a floating IPto the new instance after
 "nova boot".
 
 See the source first, mainly variables
@@ -12,7 +12,7 @@ KEYPAIR_NAME
 
 The script takes credentials, tenant name and Keystone URL from the usual
 environment variables. Currently it has one argument: -u/--userdata for
-passing a file with uesrdata, but it can be easily extended with other 
+passing a file with uesrdata, but it can be easily extended with other
 arguments.
 
 """
