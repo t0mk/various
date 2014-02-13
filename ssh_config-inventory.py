@@ -31,7 +31,7 @@ examples:
     - description: List hosts from .ssh/config
       code: ssh_config-inventory --list
     - description: Show hosts properties
-      code: ssh_config-inventory --host INSTANCE_IP
+      code: ssh_config-inventory --host HOST_ALIAS
 '''
 
 
