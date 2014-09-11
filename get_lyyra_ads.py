@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 # Script getting ads on lyyra.fi for listed postal codes. it will collect
-# add the relevant ads and sedn it by email in nice format - you'll be only
+# all the relevant ads and send it by email in nice format - you'll be only
 # one click away from seeing the location and you'll see description,
-# publication date and avaiability date, and also a link on the ad.
-# It also stored the read links in pickle file, so that you will only be
-# shown the new ones in each script run. If you want to see all, just
-# delete the pickle file.
+# publication date and avaiability date, and also a link to the ad.
+# It also stored links you already got in pickle file, so that you will
+# only be shown the new ones in each script run. If you want to see all,
+# not only new, just delete the pickle file.
 
 # Things you want to modify:
 # - list of the postal codes you want to see (POSTAL_CODES)
