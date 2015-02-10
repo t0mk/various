@@ -5,6 +5,12 @@ import sys
 import json
 import prettytable
 
+class C:
+    blue = '\033[94m'
+    green = '\033[92m'
+    red = '\033[91m'
+    end = '\033[0m'
+
 dps = os.popen('docker ps -q').read()
 
 lines = dps.split('\n')
@@ -18,26 +24,52 @@ def flattenports(a):
     r = ""
     for con, host in a.items():
         if r:
-            r += ","
+            r += "\n"
         r += 'c/' + con
         if host:
             r += '->h/' + host[0]['HostPort']
     return r
 
 t = prettytable.PrettyTable(
-   header = False, border = False
+   ['Id', 'IP', 'Image', 'Ports', 'Name'],
+   border = False
 )
-t.align = 'l'
-t.left_padding_width = 0
 
-for cid in lines[1:]:
+t.left_padding_width = 0
+t.right_padding_width = 1
+
+c = [C.blue, C.green,C.red]
+
+j = 0
+
+for cid in lines[:-1]:
     if not cid:
         continue
     d = json.loads(os.popen('docker inspect ' + cid).read())
 
     ip = d[0]['NetworkSettings']['IPAddress']
-    name = d[0]['Name']
+    n = d[0]['Name']
     p = flattenports(d[0]['NetworkSettings']['Ports'])
-    t.add_row([cid, ip, name, p])
+    i = d[0]['Config']['Image']
 
+    def col(s, o):
+        _c = lambda e: c[o % 3] + '\033[1m' + e + C.end
+        if "\n" in s:
+            ls = s.split('\n')
+            return "\n".join([_c(p) for p in ls])
+  
+        return _c(s)
+    
+    t.add_row(
+      [col(cid[:4],j),
+       col(ip,j),
+       col(i[:24],j),
+       col(p,j),
+       col(n[:24],j)])
+    j+= 1
+
+for k in t.align:
+    t.align[k] = 'l'
+        
 print t
+
