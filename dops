@@ -65,7 +65,7 @@ for cid in lines[:-1]:
        col(ip,j),
        col(i[:24],j),
        col(p,j),
-       col(n[:24],j)])
+       col(n[:19],j)])
     j+= 1
 
 for k in t.align:
