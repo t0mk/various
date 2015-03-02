@@ -15,7 +15,6 @@ dps = os.popen('docker ps -q').read()
 
 lines = dps.split('\n')
 
-
 if len(lines) < 2:
     print 'no containers running'
     sys.exit(0)
@@ -42,6 +41,11 @@ c = [C.blue, C.green,C.red]
 
 j = 0
 
+grep = None
+
+if len(sys.argv) == 2:
+    grep = sys.argv[1]
+
 for cid in lines[:-1]:
     if not cid:
         continue
@@ -59,14 +63,19 @@ for cid in lines[:-1]:
             return "\n".join([_c(p) for p in ls])
   
         return _c(s)
-    
-    t.add_row(
-      [col(cid[:4],j),
+
+        
+    r = [col(cid[:4],j),
        col(ip,j),
        col(i[:24],j),
        col(p,j),
-       col(n[:19],j)])
-    j+= 1
+       col(n[:19],j)]
+    j+=1
+    if grep:
+        if not sum([grep in uu.lower() for uu in r]):
+            continue
+
+    t.add_row(r)
 
 for k in t.align:
     t.align[k] = 'l'
