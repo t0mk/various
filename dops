@@ -6,9 +6,9 @@ import json
 import prettytable
 
 class C:
-    blue = '\033[94m'
-    green = '\033[92m'
-    red = '\033[91m'
+    blue = '\033[38;5;20m'
+    green = '\033[35m'
+    red = '\033[31m'
     end = '\033[0m'
 
 dps = os.popen('docker ps -q').read()
@@ -30,7 +30,7 @@ def flattenports(a):
     return r
 
 t = prettytable.PrettyTable(
-   ['Id', 'IP', 'Image', 'Ports', 'Name'],
+   ['Id', 'IP', 'Image[author]', 'Ports', 'Name'],
    border = False
 )
 
@@ -57,19 +57,20 @@ for cid in lines[:-1]:
     i = d[0]['Config']['Image']
 
     def col(s, o):
-        _c = lambda e: c[o % 3] + '\033[1m' + e + C.end
+        #_c = lambda e: c[o % 3] + '\033[1m' + e + C.end
+        _c = lambda e: c[o % 3] + e + C.end
         if "\n" in s:
             ls = s.split('\n')
             return "\n".join([_c(p) for p in ls])
   
         return _c(s)
 
-        
+    author, name = i.split('/') 
     r = [col(cid[:4],j),
        col(ip,j),
-       col(i[:24],j),
+       col((name + "[" + author + "]")[:24],j),
        col(p,j),
-       col(n[:19],j)]
+       col(n[:18],j)]
     j+=1
     if grep:
         if not sum([grep in uu.lower() for uu in r]):
