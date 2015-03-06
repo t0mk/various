@@ -1,4 +1,5 @@
-various
-=======
+# various
 
-random stuff
+## dops
+better `docker ps`
+!(http://i.imgur.com/QkJ6Px9.png)
