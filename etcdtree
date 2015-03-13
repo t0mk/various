@@ -1,0 +1,47 @@
+#!/usr/bin/python
+# encoding: utf-8
+
+# prints etcd tree:
+#
+# » etcdtree
+# coreos.com
+# ├── tomk => 55
+# ├── updateengine
+#     └── rebootlock
+#         └── semaphore => {"semaphore":1,"max":1,"holders":null}
+# └── xomk => 88
+
+
+import json
+import urllib2
+
+ETCD_SERVICE='http://172.17.8.101:4001'
+
+response = urllib2.urlopen(ETCD_SERVICE + '/v2/keys/?consistent=true&recursive=true&sorted=true')
+
+d = json.loads(response.read())
+
+lastprefix=u'└──'
+notlastprefix=u'├──'
+
+def l(s):
+    return s['key'].split('/')[-1]
+
+def print_node(n,prefix=''):
+    if 'dir' in n and n['dir']:
+        if prefix:
+            print prefix,
+        print l(n)
+        prefix = (len(prefix)+1) * ' '
+        for i,nn in enumerate(n['nodes']):
+            p = ''
+            if i == (len(n['nodes'])-1):
+                p = lastprefix
+            else:
+                p = notlastprefix
+            print_node(nn, prefix+p) 
+    else:
+        print prefix, l(n), '=>', n['value']
+
+for _n in d['node']['nodes']:
+    print_node(_n)
