@@ -30,7 +30,7 @@ def flattenports(a):
     return r
 
 t = prettytable.PrettyTable(
-   ['Id', 'IP', 'Image[author]', 'Ports', 'Name'],
+   ['Id', 'IP', 'Image[author]', 'Ports(cntnr->host)', 'Name'],
    border = False
 )
 
@@ -65,7 +65,11 @@ for cid in lines[:-1]:
   
         return _c(s)
 
-    author, name = i.split('/') 
+    if "/" not in i:
+        name = i
+        author = "no_author"
+    else:
+        author, name = i.split('/') 
     r = [col(cid[:4],j),
        col(ip,j),
        col((name + "[" + author + "]")[:24],j),
