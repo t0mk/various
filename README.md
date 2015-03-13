@@ -17,5 +17,5 @@ coreos.com
  ├── updateengine
      └── rebootlock
          └── semaphore => {"semaphore":1,"max":1,"holders":null}
-             └── xomk => 88
+ └── xomk => 88
 ```
