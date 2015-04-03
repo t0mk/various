@@ -65,16 +65,11 @@ for cid in lines[:-1]:
   
         return _c(s)
 
-    if "/" not in i:
-        name = i
-        author = "no_author"
-    else:
-        author, name = i.split('/') 
     r = [col(cid[:4],j),
        col(ip,j),
-       col((name + "[" + author + "]")[:24],j),
+       col(i[:28],j),
        col(p,j),
-       col(n[:18],j)]
+       col(n[:13],j)]
     j+=1
     if grep:
         if not sum([grep in uu.lower() for uu in r]):
