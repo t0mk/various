@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+// var_dump($argv);
+
+echo php_strip_whitespace($argv[1]);
+
+?>
