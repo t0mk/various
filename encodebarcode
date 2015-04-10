@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+DESC="""
+This is a script that prints "barcode" for Nordea internet banking. You can
+use it to compile a string (barcode) that people can copypaste in the barcode
+field in the internetbanking. No need to re-type ibans and ids from PDF.
+
+It's useful when you want somebody to pay your sth. You just pass your IBAN
+amount and date to this script and then send the code to the payer, who can
+easily copypaste it.
+"""
+
+import sys
+import datetime
+
+def padleft(n, s):
+    if len(s) > n:
+        raise Exception("cant padleft \"%s\"" % s)
+    nz = n - len(s)
+    if nz < 0:
+        nz = 0
+    return ("0" * nz) + s
+
+def usage():
+    print DESC
+    print "use %s <iban> <EUR> <viitenr> <duedate>" % sys.argv[0]
+    print "EUR: e<,|.>c"
+    print "duedate: yy.mm.dd"
+    print "\nexample invocation:"
+    print "%s FI0580001470824575 15.81 803627116613 2015.6.8" % sys.argv[0]
+    sys.exit(1)
+
+
+if len(sys.argv) != 5:
+    usage()
+
+iban = sys.argv[1]
+eur = sys.argv[2]
+viitenr = sys.argv[3]
+duedate = sys.argv[4]
+
+code_iban = "4" + iban[2:]
+
+code_eur = padleft(8, eur.replace(",", "").replace(".", ""))
+
+code_viitenr = padleft(23, viitenr)
+
+d = [ int(f) for f in duedate.split(".") ]
+
+if len(d) != 3:
+    raise Exception('wrong date, check duedate')
+
+if d[2] == 2015:
+    tmp = d[2]
+    d[2] = d[0]
+    d[0] = tmp
+
+if d[0] != 2015:
+    raise Exception('wrong year, check duedate')
+if (d[1] < 1) or (d[1] > 12):
+    raise Exception('wrong month, check duedate')
+if (d[2] < 1) or (d[2] > 31):
+    raise Exception('wrong day, check duedate')
+code_date = datetime.datetime.strftime(datetime.datetime(d[0],d[1],d[2]), "%y.%m.%d").replace(".", "")
+
+
+print code_iban + code_eur + code_viitenr + code_date
