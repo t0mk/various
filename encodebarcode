@@ -41,8 +41,11 @@ duedate = sys.argv[4]
 
 code_iban = "4" + iban[2:]
 
-if ("," not in eur) and ("." not in eur):
+eur = eur.replace(",", ".")
+if "." not in eur:
     eur = eur + ".00"
+if len(eur.split(".")[1]) == 1:
+    eur = eur + "0"
 code_eur = padleft(8, eur.replace(",", "").replace(".", ""))
 
 code_viitenr = padleft(23, viitenr)
