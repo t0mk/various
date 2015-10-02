@@ -5,4 +5,4 @@ import json
 import sys
 
 with open(sys.argv[1]) as f:
-    print json.dumps(yaml.load(f.read()), indent=4, sort_keys=True)
+    print yaml.load(f.read())
