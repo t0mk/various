@@ -13,6 +13,11 @@ import json
 
 URL = "http://www.nordea.fi/wemapp/api/housingloancalculator/calculatehousingloan/loantype/%s/loanamount/%s/years/%s/amortfree/0/periodicity/1/interest/%s"
 
+# loantypes:
+# a2 - mortgage
+#  r - some sort of general business loan
+
+
 def mortgage(amount='200000', years='20', interest='1.1', loantype='a2'):
     "Fetches Nordea mortage details with given parameters. Based on http://www.nordea.fi/en/personal-customers/loans/buying-a-home/loan-calculator.html"
     url = URL % (loantype, amount, years, interest)
